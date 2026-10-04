@@ -37,7 +37,7 @@ Paste or pick an SMS or chat message, add a little payment context, and ScamRada
 
 ## Run it
 
-You need Python 3.9 or newer. There is nothing to install.
+You need Python 3.10 or newer (tested on 3.10). There is nothing to install.
 
 ```
 python -m scamradar
