@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ScamRadar</title>
+<style>
+:root{--ink:#14213d;--mut:#5c677d;--line:#e3e7ee;--bg:#f4f1ea;--card:#fff;--red:#c8372d;--redbg:#fdecea;--amb:#b7791f;--ambbg:#fff4dc;--grn:#1f7a4d;--grnbg:#e6f4ec;--acc:#0b5fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+header{display:flex;align-items:center;gap:14px;padding:18px 28px;border-bottom:2px solid var(--ink);background:var(--bg)}
+.logo{width:34px;height:34px;border:3px solid var(--ink);border-radius:50%;position:relative}
+.logo:after{content:"";position:absolute;left:50%;top:50%;width:14px;height:3px;background:var(--red);transform-origin:left center;transform:rotate(-35deg)}
+h1{font-size:20px;margin:0;letter-spacing:.3px}header small{color:var(--mut)}
+.badge{margin-left:auto;font-size:12px;border:1.5px solid var(--ink);padding:3px 10px;border-radius:99px}
+main{display:grid;grid-template-columns:420px 1fr;gap:24px;padding:24px 28px;max-width:1280px;margin:auto}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1.5px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:18px}
+h2{font-size:14px;text-transform:uppercase;letter-spacing:1px;margin:0 0 12px;color:var(--mut)}
+textarea{width:100%;height:96px;border:1.5px solid var(--line);border-radius:10px;padding:10px;font:inherit;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px}
+.chip{border:1.5px solid var(--ink);background:#fff;border-radius:99px;padding:3px 10px;font-size:12.5px;cursor:pointer}.chip:hover{background:var(--ink);color:#fff}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;font-size:13px;margin-bottom:12px}
+.row label{display:flex;flex-direction:column;gap:2px;color:var(--mut)}
+.row input,.row select{border:1.5px solid var(--line);border-radius:8px;padding:6px;font:inherit;color:var(--ink)}
+button{font:inherit;cursor:pointer;border-radius:10px;border:1.5px solid var(--ink);padding:8px 14px;background:var(--ink);color:#fff}
+button.ghost{background:#fff;color:var(--ink)}
+#result{margin-top:16px}
+.res{border-radius:12px;padding:14px;border:1.5px solid}
+.res.high{background:var(--redbg);border-color:var(--red)}.res.caution{background:var(--ambbg);border-color:var(--amb)}.res.ok{background:var(--grnbg);border-color:var(--grn)}
+.res h3{margin:0 0 4px;font-size:18px}.res.high h3{color:var(--red)}.res.caution h3{color:var(--amb)}.res.ok h3{color:var(--grn)}
+.res ul{margin:8px 0;padding-left:18px}.meter{height:8px;background:#0001;border-radius:9px;overflow:hidden;margin:8px 0}.meter i{display:block;height:100%;background:currentColor}
+.parts{display:flex;gap:8px;font-size:12px;color:var(--mut);margin-top:6px;flex-wrap:wrap}.parts span{border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px}
+.acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}.note{font-size:12.5px;color:var(--mut);margin-top:8px}
+.tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:1.5px solid var(--line)}
+.tab{padding:8px 14px;cursor:pointer;border:none;background:none;color:var(--mut);border-bottom:3px solid transparent;border-radius:0}
+.tab.on{color:var(--ink);border-color:var(--red);font-weight:600}
+.item{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#fff;font-size:13.5px}
+.pill{display:inline-block;font-size:11.5px;border-radius:99px;padding:1px 9px;margin-right:6px;font-weight:600}
+.pill.high{background:var(--redbg);color:var(--red)}.pill.caution{background:var(--ambbg);color:var(--amb)}.pill.ok{background:var(--grnbg);color:var(--grn)}
+.cap{display:flex;gap:6px;align-items:center;margin-bottom:12px}.dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink)}.dot.f{background:var(--red)}
+code{font:12px ui-monospace,Consolas,monospace;color:var(--mut)}table{border-collapse:collapse;width:100%;font-size:13.5px}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.empty{color:var(--mut);padding:20px 4px}
+</style></head><body>
+<header><div class="logo"></div><div><h1>ScamRadar</h1><small>Plain-language warnings for UPI users. It advises. You decide.</small></div><span class="badge">Prototype · synthetic data only</span></header>
+<main>
+<section class="card">
+  <h2>Incoming message</h2>
+  <div class="chips" id="samples"></div>
+  <textarea id="text" placeholder="Paste or type an SMS / chat message here"></textarea>
+  <div class="row">
+    <label>Type<select id="kind"><option value="info">Just a message</option><option value="collect">Request for money</option><option value="pay">Payment to make</option></select></label>
+    <label>Amount (Rs)<input id="amount" type="number" value="0"></label>
+    <label>Sender in contacts?<select id="known"><option value="true">Yes</option><option value="false">No</option></select></label>
+    <label>First payment to this payee?<select id="newp"><option value="false">No</option><option value="true">Yes</option></select></label>
+    <label>Hour (0-23)<input id="hour" type="number" value="14" min="0" max="23"></label>
+    <label>Your usual payment (Rs)<input id="typ" type="number" value="600"></label>
+  </div>
+  <button onclick="run()">Check this message</button>
+  <div id="result"></div>
+</section>
+<section class="card">
+  <div class="tabs">
+    <button class="tab on" data-t="alerts">Today's alerts</button>
+    <button class="tab" data-t="review">Review queue</button>
+    <button class="tab" data-t="audit">Audit trail</button>
+    <button class="tab" data-t="metrics">How well it works</button>
+  </div>
+  <div id="pane"></div>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);let tab="alerts";
+const api=(p,b)=>fetch(p,b?{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(b)}:{}).then(r=>r.json());
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let last=null;
+api("/api/samples").then(s=>{$("samples").innerHTML=s.map((x,i)=>`<span class="chip" onclick="load(${i})">${esc(x.name)}</span>`).join("");window.S=s});
+function load(i){const x=S[i],c=x.context;$("text").value=x.text;$("kind").value=c.kind;$("amount").value=c.amount;$("known").value=String(c.sender_known);$("newp").value=String(c.payee_new);$("hour").value=c.hour;$("typ").value=c.typical_amount}
+async function run(){
+  const ctx={kind:$("kind").value,amount:+$("amount").value,sender_known:$("known").value==="true",payee_new:$("newp").value==="true",hour:+$("hour").value,typical_amount:+$("typ").value,account_age_days:400};
+  const r=await api("/api/analyze",{text:$("text").value,context:ctx});
+  if(r.error){$("result").innerHTML=`<div class="note">${esc(r.error)}</div>`;return}
+  last=r;const p=r.parts;
+  let capmsg=r.tier==="ok"?"":r.alert_shown?`Alert ${r.alerts_used_today} of ${r.daily_cap} for today.`:`Daily alert limit reached (${r.daily_cap}). This one is held for a human reviewer instead of pinging you again.`;
+  $("result").innerHTML=`<div class="res ${r.tier}"><h3>${esc(r.title)}</h3><div>${esc(r.advice)}</div>
+  ${r.reasons.length?"<ul>"+r.reasons.map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>":""}
+  <div class="meter" style="color:var(--${r.tier==="high"?"red":r.tier==="caution"?"amb":"grn"})"><i style="width:${Math.round(r.score*100)}%"></i></div>
+  <div class="parts"><span>score ${r.score}</span><span>rules ${p.rules}</span><span>text model ${p.model}</span><span>behaviour ${p.behaviour}</span></div>
+  <div class="acts"><button class="ghost" onclick="act('ignored')">Ignore it</button><button class="ghost" onclick="act('continued')">I want to continue anyway</button><button class="ghost" onclick="act('reported')">Report it</button></div>
+  <div class="note">${esc(capmsg)} Nothing is blocked. Your choice is always yours.${r.queued_for_review?" Sent to the review queue.":""}</div></div>`;
+  show();
+}
+async function act(a){if(last){await api("/api/user-action",{event_id:last.event_id,action:a});$("result").insertAdjacentHTML("beforeend",`<div class="note">Noted: ${a}. Saved in the audit trail.</div>`);show()}}
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("on"));b.classList.add("on");tab=b.dataset.t;show()});
+const pill=t=>`<span class="pill ${t}">${t==="high"?"Likely scam":t==="caution"?"Be careful":"Fine"}</span>`;
+async function show(){
+  let h="";
+  if(tab==="alerts"){const d=await api("/api/alerts");h=`<div class="cap"><b>Alerts today</b> ${Array.from({length:d.cap},(_,i)=>`<span class="dot ${i<d.used_today?"f":""}"></span>`).join("")} <code>${d.used_today} of ${d.cap}</code></div>`;
+   h+=d.alerts.length?d.alerts.map(a=>`<div class="item">${pill(a.tier)}<code>${a.ts.replace("T"," ")} · score ${a.score}</code><div>${esc(a.text)}</div><div class="note">${JSON.parse(a.reasons).map(esc).join(" ")}</div></div>`).join(""):`<div class="empty">No alerts yet. Pick a sample on the left and press Check.</div>`}
+  if(tab==="review"){const d=await api("/api/review");h=`<div class="note" style="margin:0 0 10px">A person looks at high-risk and over-limit items. Their decision is logged and kept as a label. It never blocks a payment.</div>`;
+   h+=d.pending.length?d.pending.map(a=>`<div class="item">${pill(a.tier)}<code>#${a.id} · ${esc(a.why)}</code><div>${esc(a.text)}</div><div class="acts"><button onclick="dec(${a.rid},'scam')">Confirm scam</button><button class="ghost" onclick="dec(${a.rid},'safe')">Mark safe</button></div></div>`).join(""):`<div class="empty">Queue is empty.</div>`;
+   const done=d.all.filter(x=>x.decision);if(done.length)h+=`<h2 style="margin-top:16px">Decided</h2>`+done.map(a=>`<div class="item"><code>#${a.id} → ${a.decision}</code> ${esc(a.text.slice(0,90))}…</div>`).join("")}
+  if(tab==="audit"){const d=await api("/api/audit");h=`<div class="note" style="margin:0 0 10px">Every decision is chained with a hash. Chain check: <b style="color:var(--${d.chain_ok?"grn":"red"})">${d.chain_ok?"intact":"BROKEN"}</b></div><table><tr><th>Time</th><th>Event</th><th>Action</th><th>Detail</th></tr>`+d.entries.map(e=>`<tr><td><code>${e.ts.slice(11)}</code></td><td>#${e.event_id}</td><td>${esc(e.action)}</td><td><code>${esc(e.detail.slice(0,80))}</code></td></tr>`).join("")+"</table>"}
+  if(tab==="metrics"){const m=await api("/api/metrics");h=`<div class="note" style="margin:0 0 10px"><b>Synthetic data only.</b> Trained on ${m.train_messages} made-up messages, tested on ${m.heldout_messages} made-up messages whose sentence shapes were not in training. This is not real-world accuracy.</div><table><tr><th>Setup</th><th>Precision</th><th>Recall</th><th>F1</th></tr>`+Object.entries(m.variants).map(([k,v])=>`<tr><td>${k.replace(/_/g," ")}</td><td>${v.precision}</td><td>${v.recall}</td><td>${v.f1}</td></tr>`).join("")+`</table><h2 style="margin-top:16px">Recall by scam type</h2><table>`+Object.entries(m.scam_recall_by_family).map(([k,v])=>`<tr><td>${k.replace(/_/g," ")}</td><td>${v}</td></tr>`).join("")+"</table>"}
+  $("pane").innerHTML=h}
+async function dec(id,d){await api("/api/review",{id,decision:d});show()}
+show();
+</script></body></html>
