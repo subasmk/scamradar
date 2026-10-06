@@ -2,6 +2,8 @@
 
 # ScamRadar
 
+![Python](https://img.shields.io/badge/Python-3.10+-3776ab?style=flat-square&logo=python&logoColor=white) ![Dependencies](https://img.shields.io/badge/dependencies-none-16a34a?style=flat-square) ![Data](https://img.shields.io/badge/data-synthetic_only-f59e0b?style=flat-square) ![Hackathon](https://img.shields.io/badge/Amazon_Hackathon-Round_1_prototype-232f3e?style=flat-square)
+
 A UPI scam alert app that tells you, in plain words, why a message looks like a scam. It never blocks a payment. A person stays in the loop for the risky cases, and every decision is written to a tamper-evident log.
 
 Built for the Amazon hackathon Round 1 concept (track 02, AI scam pattern recognition on UPI). **Synthetic data only. This is a prototype, not a security product.**
@@ -82,3 +84,7 @@ web/index.html   the app screen
 - Messages and context are entered by hand. A real app would read them on the device.
 - The model only knows the synthetic scam types it was trained on.
 - It will miss scams that use new wording. That is why the review queue exists.
+
+---
+
+Built by [Subash M K](https://github.com/subasmk) and team Leo Trinity.
